@@ -7,13 +7,13 @@ no per-agent pricing, nothing calling home. `docker compose up` and it is
 running inside your network.
 
 <p align="center">
-  <a href="https://voho.ai/industries/logistics">
+  <a href="https://voho.ai/demos/logistics">
     <img src="docs/demo.png" alt="Saudi Logistics Voice Agent — Shipment tracking played end to end in Saudi Arabic, with the tool calls and the outcome visible" width="900">
   </a>
 </p>
 
 <p align="center">
-  <b><a href="https://voho.ai/industries/logistics">▶ Play the live demo</a></b> — runs in your browser, no sign-up.
+  <b><a href="https://voho.ai/demos/logistics">▶ Play the live demo</a></b> — runs in your browser, no sign-up.
 </p>
 
 ---
@@ -34,11 +34,16 @@ happening in a real system, not in a promise that somebody will call back.
 | `dispatch` | Driver dispatch | The daily calls to drivers, made automatically and written down. |
 | `delivery` | Delivery confirmation | Failed deliveries rescheduled on the first call. |
 
-Play any of them right now, before you have connected anything:
+Play one end to end, in the terminal:
 
 ```bash
+python setup.py                     # get a Voho key — a minute, once
 python examples/play.py track
 ```
+
+Every line is spoken with Voho and written to `out/`, so you hear what a
+caller would hear. `--silent` reads the conversation without audio, and needs
+no key at all.
 
 The tools (`assign_route`, `reschedule_delivery`, `subscribe_updates`, `track_shipment`) replay the results recorded with each scenario, so the
 whole conversation runs on an empty machine. Connecting a system means
@@ -58,9 +63,17 @@ These are not conversations, so the engine does not play them — they are the r
 ```bash
 git clone https://github.com/yar-malik/saudi-logistics-voice-agent.git
 cd saudi-logistics-voice-agent
-cp .env.example .env      # paste in a Voho key
+pip install -r requirements.txt
+
+python setup.py          # asks for your Voho key and verifies it
 docker compose up --build
 ```
+
+`setup.py` walks you through creating a token at
+[app.voho.ai](https://app.voho.ai) under **API Tokens**, checks it against the
+live voice catalogue so a typo fails now rather than on a call, and writes it
+to `.env`. The server refuses to start without one — a line that answers and
+then cannot speak is worse than one that never came up.
 
 The container runs as a non-root user with a read-only filesystem and
 `no-new-privileges`, because the first question your security review will ask
@@ -143,14 +156,14 @@ One repository per sector, each with its own scenarios and its own demo:
 
 | Repository | Sector | Live demo |
 | --- | --- | --- |
-| [saudi-healthcare-voice-agent](https://github.com/yar-malik/saudi-healthcare-voice-agent) | Healthcare | [Play it](https://voho.ai/industries/healthcare) |
-| [saudi-banking-voice-agent](https://github.com/yar-malik/saudi-banking-voice-agent) | Banking | [Play it](https://voho.ai/industries/banking) |
-| [saudi-financial-services-voice-agent](https://github.com/yar-malik/saudi-financial-services-voice-agent) | Financial services | [Play it](https://voho.ai/industries/financial-services) |
-| [saudi-insurance-voice-agent](https://github.com/yar-malik/saudi-insurance-voice-agent) | Insurance | [Play it](https://voho.ai/industries/insurance) |
-| [saudi-retail-voice-agent](https://github.com/yar-malik/saudi-retail-voice-agent) | Retail and consumer goods | [Play it](https://voho.ai/industries/retail-consumer) |
-| [saudi-travel-voice-agent](https://github.com/yar-malik/saudi-travel-voice-agent) | Travel and hospitality | [Play it](https://voho.ai/industries/travel-hospitality) |
-| [saudi-debt-collection-voice-agent](https://github.com/yar-malik/saudi-debt-collection-voice-agent) | Debt collection | [Play it](https://voho.ai/industries/debt-collection) |
-| [saudi-home-services-voice-agent](https://github.com/yar-malik/saudi-home-services-voice-agent) | Home services | [Play it](https://voho.ai/industries/home-services) |
+| [saudi-healthcare-voice-agent](https://github.com/yar-malik/saudi-healthcare-voice-agent) | Healthcare | [Play it](https://voho.ai/demos/healthcare) |
+| [saudi-banking-voice-agent](https://github.com/yar-malik/saudi-banking-voice-agent) | Banking | [Play it](https://voho.ai/demos/banking) |
+| [saudi-financial-services-voice-agent](https://github.com/yar-malik/saudi-financial-services-voice-agent) | Financial services | [Play it](https://voho.ai/demos/financial-services) |
+| [saudi-insurance-voice-agent](https://github.com/yar-malik/saudi-insurance-voice-agent) | Insurance | [Play it](https://voho.ai/demos/insurance) |
+| [saudi-retail-voice-agent](https://github.com/yar-malik/saudi-retail-voice-agent) | Retail and consumer goods | [Play it](https://voho.ai/demos/retail-consumer) |
+| [saudi-travel-voice-agent](https://github.com/yar-malik/saudi-travel-voice-agent) | Travel and hospitality | [Play it](https://voho.ai/demos/travel-hospitality) |
+| [saudi-debt-collection-voice-agent](https://github.com/yar-malik/saudi-debt-collection-voice-agent) | Debt collection | [Play it](https://voho.ai/demos/debt-collection) |
+| [saudi-home-services-voice-agent](https://github.com/yar-malik/saudi-home-services-voice-agent) | Home services | [Play it](https://voho.ai/demos/home-services) |
 
 ## Want this in production?
 
