@@ -1,0 +1,290 @@
+{
+  "industry": "logistics",
+  "slug": "logistics",
+  "greeting": {
+    "ar": "أهلاً بك، معك ليلى من قسم الشحن. كيف أقدر أساعدك؟",
+    "en": "Hello, this is Layla in shipping. How can I help?"
+  },
+  "flows": [
+    {
+      "id": "track",
+      "name": "Shipment tracking",
+      "promise": "“Where is my order?” answered from live tracking, not a guess.",
+      "kind": "call",
+      "beats": [
+        {
+          "at": 0.2,
+          "kind": "msg",
+          "who": "CALLER",
+          "ar": "وين شحنتي؟ المفروض توصل أمس.",
+          "en": "Where is my shipment? It was due yesterday."
+        },
+        {
+          "at": 2.4,
+          "kind": "tool",
+          "name": "track_shipment",
+          "args": "{ \"awb\": \"AWB-99120\" }",
+          "result": "{ \"status\": \"out_for_delivery\", \"eta\": \"today 16:40\", \"delay_reason\": \"customs\" }"
+        },
+        {
+          "at": 4.8,
+          "kind": "msg",
+          "who": "AGENT",
+          "ar": "تأخرت في الجمارك، بس الحين مع المندوب وتوصلك اليوم قبل ٥.",
+          "en": "It was held in customs but it is with the driver now, arriving before 5 today."
+        },
+        {
+          "at": 8.2,
+          "kind": "tool",
+          "name": "subscribe_updates",
+          "args": "{ \"channel\": \"whatsapp\" }",
+          "result": "{ \"subscribed\": true }"
+        }
+      ],
+      "outcome": [
+        [
+          "Status",
+          "Out for delivery"
+        ],
+        [
+          "Reason",
+          "Customs — explained"
+        ],
+        [
+          "Repeat call",
+          "Prevented"
+        ]
+      ]
+    },
+    {
+      "id": "dispatch",
+      "name": "Driver dispatch",
+      "promise": "The daily calls to drivers, made automatically and written down.",
+      "kind": "call",
+      "beats": [
+        {
+          "at": 0.2,
+          "kind": "msg",
+          "who": "AGENT",
+          "ar": "عندك ثلاث توصيلات في شمال الرياض. تقدر تاخذ رابعة؟",
+          "en": "You have three drops in north Riyadh. Can you take a fourth?"
+        },
+        {
+          "at": 3.4,
+          "kind": "msg",
+          "who": "CALLER",
+          "ar": "إي أقدر، بس بعد الثانية.",
+          "en": "Yes, but after two."
+        },
+        {
+          "at": 5,
+          "kind": "tool",
+          "name": "assign_route",
+          "args": "{ \"driver\": \"D-118\", \"stop\": \"S-4471\", \"after\": \"14:00\" }",
+          "result": "{ \"route_updated\": true, \"eta_customer\": \"15:20\" }"
+        },
+        {
+          "at": 7.4,
+          "kind": "msg",
+          "who": "AGENT",
+          "ar": "ضفتها لمسارك، والعميل انبلغ إن الموعد ٣:٢٠.",
+          "en": "Added to your route, and the customer has been told 3:20."
+        }
+      ],
+      "outcome": [
+        [
+          "Route",
+          "Updated live"
+        ],
+        [
+          "Customer",
+          "Auto-notified"
+        ],
+        [
+          "Dispatcher time",
+          "None"
+        ]
+      ]
+    },
+    {
+      "id": "delivery",
+      "name": "Delivery confirmation",
+      "promise": "Failed deliveries rescheduled on the first call.",
+      "kind": "call",
+      "beats": [
+        {
+          "at": 0.2,
+          "kind": "msg",
+          "who": "AGENT",
+          "ar": "حاولنا نوصل طلبك اليوم وما حصلناك. نعيد التوصيل بكرة؟",
+          "en": "We tried to deliver today and missed you. Shall we retry tomorrow?"
+        },
+        {
+          "at": 3.6,
+          "kind": "msg",
+          "who": "CALLER",
+          "ar": "إي بس بعد المغرب.",
+          "en": "Yes, but after sunset prayer."
+        },
+        {
+          "at": 5.2,
+          "kind": "tool",
+          "name": "reschedule_delivery",
+          "args": "{ \"awb\": \"AWB-99120\", \"window\": \"19:00-21:00\" }",
+          "result": "{ \"confirmed\": true, \"attempt\": 2 }"
+        }
+      ],
+      "outcome": [
+        [
+          "Rescheduled",
+          "19:00–21:00"
+        ],
+        [
+          "Second attempt",
+          "Confirmed"
+        ],
+        [
+          "Return to depot",
+          "Avoided"
+        ]
+      ]
+    },
+    {
+      "id": "customs",
+      "kind": "document",
+      "name": "Customs paperwork",
+      "promise": "Shipping documents and invoices read straight into the customs paperwork.",
+      "docName": "Import file",
+      "docKind": "Scan · bilingual",
+      "hard": "A bill of lading, a commercial invoice in two languages, and a packing list whose totals disagree by two cartons.",
+      "page": {
+        "title": "Import file",
+        "titleAr": "بيان جمركي",
+        "subtitle": "Bill of lading · commercial invoice · packing list",
+        "rows": 6
+      },
+      "fields": [
+        {
+          "label": "bl_number",
+          "value": "MSCU-7741203",
+          "confidence": 0.98,
+          "box": {
+            "x": 6,
+            "y": 12,
+            "w": 44,
+            "h": 7
+          }
+        },
+        {
+          "label": "consignee",
+          "value": "شركة الرياض للتجارة",
+          "confidence": 0.95,
+          "box": {
+            "x": 6,
+            "y": 22,
+            "w": 50,
+            "h": 7
+          }
+        },
+        {
+          "label": "hs_code",
+          "value": "8544.42",
+          "confidence": 0.88,
+          "note": "Inferred from description",
+          "box": {
+            "x": 56,
+            "y": 22,
+            "w": 38,
+            "h": 7
+          }
+        },
+        {
+          "label": "declared_value_usd",
+          "value": "84200.00",
+          "confidence": 0.96,
+          "box": {
+            "x": 6,
+            "y": 36,
+            "w": 88,
+            "h": 8
+          }
+        },
+        {
+          "label": "carton_count",
+          "value": "318",
+          "confidence": 0.64,
+          "note": "Packing list says 320 — discrepancy flagged",
+          "box": {
+            "x": 6,
+            "y": 62,
+            "w": 50,
+            "h": 8
+          }
+        }
+      ],
+      "outcome": [
+        [
+          "Declaration",
+          "Pre-filled"
+        ],
+        [
+          "Discrepancy",
+          "Caught pre-submission"
+        ],
+        [
+          "Delay at customs",
+          "Avoided"
+        ]
+      ]
+    },
+    {
+      "id": "disruption",
+      "kind": "workflow",
+      "name": "Disruption handling",
+      "promise": "A delayed truck reroutes itself and tells the customers before they call.",
+      "trigger": "A vehicle stops moving on the Riyadh–Dammam route",
+      "reading": "No GPS movement for 35 minutes, 140 km from destination",
+      "steps": [
+        {
+          "t": "Confirm it is not a rest stop",
+          "d": "Checked the driver’s hours and whether it is a known rest stop",
+          "system": "Vehicle tracking"
+        },
+        {
+          "t": "Identify affected consignments",
+          "d": "9 drops, 3 with same-day SLA",
+          "system": "TMS"
+        },
+        {
+          "t": "Reassign the SLA-critical drops",
+          "d": "Nearest vehicle with capacity",
+          "system": "TMS"
+        },
+        {
+          "t": "Notify customers",
+          "d": "Revised ETAs by WhatsApp, in Arabic",
+          "system": "WhatsApp"
+        },
+        {
+          "t": "Raise an exception",
+          "d": "Logged against the vehicle and driver",
+          "system": "TMS"
+        }
+      ],
+      "outcome": [
+        [
+          "Urgent deliveries",
+          "Moved to another van"
+        ],
+        [
+          "Customers",
+          "Told first"
+        ],
+        [
+          "Customers calling to ask",
+          "Prevented"
+        ]
+      ]
+    }
+  ]
+}
